@@ -20,7 +20,7 @@ app.use('/tasks', taskRoute); // Task routes (CRUD operations)
 app.use('/teams', teamRoute); // Team routes (CRUD operations)
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI as string)
+mongoose.connect(process.env.MONGO_URI as string)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.log('Failed to connect to MongoDB', err));
 
