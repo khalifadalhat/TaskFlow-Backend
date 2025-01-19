@@ -78,7 +78,7 @@ export const getUserProfile = async (req: Request, res: Response): Promise<void>
   
   // Update User Profile (PUT /profile)
   export const updateUserProfile = async (req: Request, res: Response): Promise<void> => {
-    const { skills, availability }: { skills?: string, availability?: string } = req.body;
+    const { profilePicture, skills, availability }: { profilePicture?: string, skills?: string, availability?: boolean } = req.body;
   
     try {
       const user = await User.findById((req as any).user.id); // From the authenticate middleware
@@ -87,6 +87,7 @@ export const getUserProfile = async (req: Request, res: Response): Promise<void>
         return;
       }
   
+      if(profilePicture) user.profilePicture = profilePicture;
       if (skills) user.skills = skills;
       if (availability) user.availability = availability;
   
