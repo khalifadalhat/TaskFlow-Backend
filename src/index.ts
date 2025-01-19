@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRoute from './routes/authRoute';
 import userRoute from './routes/userRoute';
+import projectRoute from './routes/projectRoute';
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ app.use(express.json()); // To parse JSON body data
 // Use routes
 app.use('/auth', authRoute); // Auth routes (login, register)
 app.use('/user', userRoute); // User routes (profile access, update)
+app.use('/projects', projectRoute); // Project routes (CRUD operations)
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI as string)
