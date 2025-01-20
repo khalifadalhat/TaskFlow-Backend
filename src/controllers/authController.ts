@@ -13,10 +13,12 @@ export const registerUser = async (req: Request, res: Response): Promise<Respons
     if (userExists) {
       return res.status(400).json({ message: 'Username already exists' });
     }
+    if (!password) {
+      return res.status(400).json({ message: 'Password is required' });
+    }
 
     // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
     const newUser = new User({
