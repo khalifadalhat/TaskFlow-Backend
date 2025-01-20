@@ -9,7 +9,7 @@ interface ITeam extends Document {
 const teamSchema = new Schema<ITeam>({
     teamName: { type: String, required: true },
     teamMembers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    availableResources: [{ type: Schema.Types.ObjectId, ref: 'Resource' }]
+    availableResources: [{ type: String, default: [] }],
 });
 
 const Team = model<ITeam>("Team", teamSchema);
