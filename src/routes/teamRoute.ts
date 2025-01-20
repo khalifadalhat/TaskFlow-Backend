@@ -1,22 +1,22 @@
 import { Router } from "express";
-import { createProject, deleteProject, getProject, getProjects, updateProject } from "../controllers/projectController";
 import { authenticate } from "../middleware/authMiddleware";
+import { createTeam, deleteTeam, getTeam, getTeams, updateTeam } from "../controllers/teamController";
 
 const router: Router = Router();
 
-// GET /project: Get all projects
-router.get('/', authenticate, getProjects);
+// Get /teams: Get all teams
+router.get('/', authenticate, getTeams);
 
-// GET /project/:id: Get a specific project by ID
-router.get('/:id', authenticate, getProject);
+// GET /team/:id: Get a specific team by ID
+router.get('/:id', authenticate, getTeam);
 
-// POST /project: Create a new project
-router.post('/', authenticate, createProject);
+// POST /team: Create a new team
+router.post('/', authenticate, createTeam);
 
-// PUT /project/:id: Update a project by ID
-router.put('/:id', authenticate, updateProject);
+// PUT /team/:id: Update a team by ID
+router.put('/:id', authenticate, updateTeam);
 
-// DELETE /project/:id: Delete a project by ID
-router.delete('/:id', authenticate, deleteProject);
+// DELETE /team/:id: Delete a team by ID
+router.delete('/:id', authenticate, deleteTeam);
 
 export default router;
