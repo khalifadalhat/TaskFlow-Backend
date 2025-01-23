@@ -10,9 +10,18 @@ export const createTask = async (req: Request, res: Response) => {
     }
 };
 
+export const getTasks = async (req: Request, res: Response) => {
+    try {
+        const tasks = await Task.find().populate('taskAssignee', 'firstName lastName');
+        res.status(200).json(tasks);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to retrieve tasks" });
+    }
+};  
+
 export const getTask = async (req: Request, res: Response) => {
     try {
-        const task = await Task.findById(req.params.id);
+        const task = await Task.findById(req.params.id).populate('taskAssignee', 'firstName lastName');
         if (!task) {
             res.status(404).json({ error: "Task not found" });
         } else {
@@ -22,15 +31,6 @@ export const getTask = async (req: Request, res: Response) => {
         res.status(500).json({ error: "Failed to retrieve task" });
     }
 };
-
-export const getTasks = async (req: Request, res: Response) => {
-    try {
-        const tasks = await Task.find();
-        res.status(200).json(tasks);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve tasks" });
-    }
-};  
 export const updateTask = async (req: Request, res: Response) => {
     try {
         const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
