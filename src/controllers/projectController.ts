@@ -3,7 +3,7 @@ import Project from "../models/Project";
 
 const getProjects = async (req: Request, res: Response) => {
   try {
-    const projects = await Project.find().populate("projectMembers"); 
+    const projects = await Project.find().populate("projectMembers", "firstName lastName"); 
     res.status(200).json(projects);
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve projects" });
@@ -11,7 +11,7 @@ const getProjects = async (req: Request, res: Response) => {
 };
 const getProject = async (req: Request, res: Response) => {
   try {
-    const project = await Project.findById(req.params.id).populate("projectMembers");
+    const project = await Project.findById(req.params.id).populate("projectMembers", "firstName lastName");
     if (!project) {
       res.status(404).json({ error: "Project not found" });
     } else {
