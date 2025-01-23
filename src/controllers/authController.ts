@@ -92,7 +92,7 @@ export const getUserProfile = async (req: Request, res: Response): Promise<void>
   // Update User Profile (PUT /profile)
   export const updateUserProfile = async (req: Request, res: Response): Promise<void> => {
     const {id} = req.params;
-    const { profilePicture, skills, availability }: { profilePicture?: string, skills?: string, availability?: boolean } = req.body;
+    const { firstName, lastName,profilePicture, skills, availability }: { firstName?: string, lastName?: string, profilePicture?: string, skills?: string, availability?: boolean } = req.body;
   
     try {
       const user = await User.findById(id); // From the authenticate middleware
@@ -100,7 +100,8 @@ export const getUserProfile = async (req: Request, res: Response): Promise<void>
         res.status(404).json({ message: 'User not found' });
         return;
       }
-  
+      if (firstName) user.firstName = firstName;
+      if (lastName) user.lastName = lastName;
       if(profilePicture) user.profilePicture = profilePicture;
       if (skills) user.skills = skills;
       if (availability) user.availability = availability;
