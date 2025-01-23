@@ -5,11 +5,11 @@ import jwt from 'jsonwebtoken';
 
 // User Registration (POST /register)
 export const registerUser = async (req: Request, res: Response): Promise<Response> => {
-  const { username, password, role }: { username: string, password: string, role: string } = req.body;
+  const { email, password, role }: { email: string, password: string, role: string } = req.body;
   
   try {
     // Check if user already exists
-    const userExists = await User.findOne({ username });
+    const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: 'Username already exists' });
     }
@@ -22,7 +22,7 @@ export const registerUser = async (req: Request, res: Response): Promise<Respons
 
     // Create new user
     const newUser = new User({
-      username,
+      email,
       password: hashedPassword,
       role
     });
@@ -38,10 +38,10 @@ export const registerUser = async (req: Request, res: Response): Promise<Respons
 
 // User Login (POST /login)
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
-  const { username, password }: { username: string, password: string } = req.body;
+  const { email, password }: { email: string, password: string } = req.body;
   
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
