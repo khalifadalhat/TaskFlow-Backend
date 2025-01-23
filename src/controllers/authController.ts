@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 
 // User Registration (POST /register)
 export const registerUser = async (req: Request, res: Response): Promise<Response> => {
-  const { email, password, role }: { email: string, password: string, role: string } = req.body;
+  const { email, password, role } = req.body;
   
   try {
     // Check if user already exists
@@ -13,23 +13,26 @@ export const registerUser = async (req: Request, res: Response): Promise<Respons
     if (userExists) {
       return res.status(400).json({ message: 'Username already exists' });
     }
-    if (!password) {
-      return res.status(400).json({ message: 'Password is required' });
-    }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
+    // Create new user with placeholder names
     const newUser = new User({
       email,
       password: hashedPassword,
-      role
+      role,
+      firstName: 'Pending', // Temporary placeholder
+      lastName: 'Update'    // Temporary placeholder
     });
 
     await newUser.save();
 
-    return res.status(201).json({ message: 'User registered successfully' });
+    return res.status(201).json({ 
+      message: 'User registered successfully', 
+      userId: newUser._id,
+      needsProfileCompletion: true 
+    });
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     return res.status(500).json({ message: 'Server error', error: errorMessage });
