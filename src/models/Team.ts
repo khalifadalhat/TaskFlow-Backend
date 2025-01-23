@@ -1,8 +1,8 @@
-import { Schema, model, Document } from "mongoose";
+import mongoose, { Schema, model, Document } from "mongoose";
 
 interface ITeam extends Document {
     teamName: string;
-    teamMembers: string[];
+    teamMembers: mongoose.Schema.Types.ObjectId;
     availableResources: string[];
 }
 
