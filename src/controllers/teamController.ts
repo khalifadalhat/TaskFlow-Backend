@@ -3,7 +3,7 @@ import Team from "../models/Team";
 
 export const getTeams = async (req: Request, res: Response) => {
     try {
-        const teams = await Team.find();
+        const teams = await Team.find().populate('teamMembers', 'firstName lastName');
         res.status(200).json(teams);
     } catch (error) {
         res.status(500).json({ error: "Failed to retrieve teams" });
@@ -12,7 +12,7 @@ export const getTeams = async (req: Request, res: Response) => {
 
 export const getTeam = async (req: Request, res: Response) => {
     try {
-        const team = await Team.findById(req.params.id);
+        const team = await Team.findById(req.params.id).populate('teamMembers', 'firstName lastName');
         if (!team) {
             res.status(404).json({ error: "Team not found" });
         } else {
