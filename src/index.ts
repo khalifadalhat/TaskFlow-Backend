@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import authRoute from './routes/authRoute';
 import userRoute from './routes/userRoute';
 import projectRoute from './routes/projectRoute';
@@ -10,17 +11,25 @@ import teamRoute from './routes/teamRoute';
 dotenv.config();
 
 const app: Application = express();
-app.use(express.json()); // To parse JSON body data
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })
+);
+app.use(express.json());
 
 // Use routes
-app.use('/auth', authRoute); // Auth routes (login, register)
-app.use('/user', userRoute); // User routes (profile access, update)
-app.use('/projects', projectRoute); // Project routes (CRUD operations)
-app.use('/tasks', taskRoute); // Task routes (CRUD operations)
-app.use('/teams', teamRoute); // Team routes (CRUD operations)
+app.use('/auth', authRoute);
+app.use('/user', userRoute);
+app.use('/projects', projectRoute);
+app.use('/tasks', taskRoute);
+app.use('/teams', teamRoute);
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI as string)
+mongoose
+  .connect(process.env.MONGO_URI as string)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.log('Failed to connect to MongoDB', err));
 
