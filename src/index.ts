@@ -30,8 +30,12 @@ app.use('/teams', teamRoute);
 // MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI as string)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.log('Failed to connect to MongoDB', err));
-
-const port = process.env.PORT ?? 8080;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+  .then(() => {
+    console.log('Connected to MongoDB');
+    const port = process.env.PORT ?? 8080;
+    app.listen(port, () => console.log(`Server running on port ${port}`));
+  })
+  .catch(err => {
+    console.error('Failed to connect to MongoDB', err);
+    process.exit(1);
+  });
