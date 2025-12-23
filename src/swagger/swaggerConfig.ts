@@ -25,7 +25,7 @@ const options: swaggerJsdoc.Options = {
         description: 'Development server',
       },
       {
-        url: 'https://taskflow-backend-i2nl.onrender.com/api/v1',
+        url: 'https://taskflow-backend-1-x8cy.onrender.com/api/v1',
         description: 'Production server',
       },
     ],
