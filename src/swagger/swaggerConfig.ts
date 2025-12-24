@@ -24,10 +24,6 @@ const options: swaggerJsdoc.Options = {
         url: 'http://localhost:8080/api/v1',
         description: 'Development server',
       },
-      {
-        url: 'https://taskflow-backend-1-x8cy.onrender.com/api/v1',
-        description: 'Production server',
-      },
     ],
     components: {
       securitySchemes: {
