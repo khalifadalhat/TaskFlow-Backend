@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import rootRouter from './routes';
 import swaggerDocs from './swagger/swaggerConfig';
 
@@ -21,6 +22,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 
 /**
  * @swagger
