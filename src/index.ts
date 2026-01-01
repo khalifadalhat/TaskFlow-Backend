@@ -8,6 +8,9 @@ import swaggerDocs from './swagger/swaggerConfig';
 dotenv.config();
 
 const app: Application = express();
+
+app.set('trust proxy', 1);
+
 const PORT = Number(process.env.PORT) || 8080;
 
 app.use(
