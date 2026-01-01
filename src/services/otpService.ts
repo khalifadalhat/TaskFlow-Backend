@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import brevo from '@getbrevo/brevo';
+import * as brevo from '@getbrevo/brevo';
 import User, { IUser } from '../models/User';
 
 class OTPService {
@@ -8,10 +8,9 @@ class OTPService {
   private static initializeBrevo() {
     if (!this.apiInstance) {
       const apiInstance = new brevo.TransactionalEmailsApi();
-      apiInstance.setApiKey(
-        brevo.TransactionalEmailsApiApiKeys.apiKey,
-        process.env.BREVO_API_KEY || ''
-      );
+
+      apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!);
+
       this.apiInstance = apiInstance;
     }
     return this.apiInstance;
@@ -26,16 +25,15 @@ class OTPService {
   }
 
   static async sendOTPEmail(
-    email: string, 
-    otp: string, 
+    email: string,
+    otp: string,
     type: 'verification' | 'reset' = 'verification'
   ): Promise<boolean> {
     try {
       const apiInstance = this.initializeBrevo();
-      
-      const subject = type === 'verification' 
-        ? 'Verify Your Email - TaskFlow'
-        : 'Reset Your Password - TaskFlow';
+
+      const subject =
+        type === 'verification' ? 'Verify Your Email - TaskFlow' : 'Reset Your Password - TaskFlow';
 
       const htmlContent = `
         <!DOCTYPE html>
@@ -69,7 +67,9 @@ class OTPService {
           <div class="content">
             <h2>${type === 'verification' ? 'Verify Your Email' : 'Reset Your Password'}</h2>
             <p>Hello,</p>
-            <p>Use the following OTP code to ${type === 'verification' ? 'verify your email address' : 'reset your password'}:</p>
+            <p>Use the following OTP code to ${
+              type === 'verification' ? 'verify your email address' : 'reset your password'
+            }:</p>
             
             <div class="otp-code">${otp}</div>
             
@@ -89,17 +89,17 @@ class OTPService {
       `;
 
       const sendSmtpEmail = new brevo.SendSmtpEmail();
-      
+
       sendSmtpEmail.subject = subject;
       sendSmtpEmail.htmlContent = htmlContent;
       sendSmtpEmail.sender = {
         name: process.env.BREVO_SENDER_NAME || 'TaskFlow',
-        email: process.env.BREVO_SENDER_EMAIL || 'noreply@taskflow.com'
+        email: process.env.BREVO_SENDER_EMAIL || 'noreply@taskflow.com',
       };
       sendSmtpEmail.to = [{ email, name: email.split('@')[0] }];
       sendSmtpEmail.replyTo = {
         email: process.env.BREVO_REPLY_TO || 'support@taskflow.com',
-        name: process.env.BREVO_REPLY_TO_NAME || 'TaskFlow Support'
+        name: process.env.BREVO_REPLY_TO_NAME || 'TaskFlow Support',
       };
 
       if (process.env.BREVO_TEMPLATE_ID) {
@@ -109,7 +109,6 @@ class OTPService {
       await apiInstance.sendTransacEmail(sendSmtpEmail);
       console.log(`✅ OTP email sent to ${email} via Brevo`);
       return true;
-      
     } catch (error) {
       console.error('❌ Error sending email via Brevo:', error);
 
@@ -146,8 +145,8 @@ class OTPService {
   }
 
   static async verifyOTP(
-    email: string, 
-    otp: string, 
+    email: string,
+    otp: string,
     type: 'verification' | 'reset' = 'verification'
   ): Promise<{ success: boolean; message?: string }> {
     try {
@@ -179,7 +178,6 @@ class OTPService {
 
       await user.save();
       return { success: true };
-      
     } catch (error) {
       console.error('Error verifying OTP:', error);
       return { success: false, message: 'Server error' };
@@ -187,7 +185,7 @@ class OTPService {
   }
 
   static async resendOTP(
-    email: string, 
+    email: string,
     type: 'verification' | 'reset' = 'verification'
   ): Promise<{ success: boolean; message?: string }> {
     try {
@@ -206,7 +204,6 @@ class OTPService {
       }
 
       return { success: true, message: 'OTP sent successfully' };
-      
     } catch (error) {
       console.error('Error resending OTP:', error);
       return { success: false, message: 'Failed to resend OTP' };
@@ -214,7 +211,7 @@ class OTPService {
   }
 
   static async hasValidOTP(
-    email: string, 
+    email: string,
     type: 'verification' | 'reset' = 'verification'
   ): Promise<boolean> {
     const user = await User.findOne({ email });
@@ -226,7 +223,10 @@ class OTPService {
     return otpField.expiresAt > new Date();
   }
 
-  static async clearOTP(email: string, type: 'verification' | 'reset' = 'verification'): Promise<void> {
+  static async clearOTP(
+    email: string,
+    type: 'verification' | 'reset' = 'verification'
+  ): Promise<void> {
     const user = await User.findOne({ email });
     if (!user) return;
 
