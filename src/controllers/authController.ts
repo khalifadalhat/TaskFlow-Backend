@@ -137,6 +137,20 @@ export const verifyEmail = async (
       jwtOptions
     );
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+
+    res.cookie("role", user.role, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+
     return res.status(200).json({
       success: true,
       message: "Email verified successfully!",
@@ -288,6 +302,22 @@ export const loginUser = async (
       JWT_SECRET,
       jwtOptions
     );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 1000 * 60 * 60 * 24,
+    });
+
+    res.cookie("role", user.role, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 1000 * 60 * 60 * 24,
+    });
 
     return res.status(200).json({
       success: true,
