@@ -1,24 +1,39 @@
-import express, { Application, Request, Response } from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import rootRouter from './routes';
-import swaggerDocs from './swagger/swaggerConfig';
+import express, { Application, Request, Response } from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import rootRouter from "./routes";
+import swaggerDocs from "./swagger/swaggerConfig";
 
 dotenv.config();
 
 const app: Application = express();
 
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 
 const PORT = Number(process.env.PORT) || 8080;
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: (origin, callback) => {
+      console.log("Incoming Origin:", origin); // <--- THIS LOG IS CRITICAL
+      console.log("Expected Origin (CLIENT_URL):", process.env.CLIENT_URL);
+
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      // Strict check
+      if (process.env.CLIENT_URL && origin === process.env.CLIENT_URL) {
+        return callback(null, true);
+      } else {
+        // If it doesn't match, log why
+        console.log("❌ CORS Blocked! Origin does not match CLIENT_URL.");
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
@@ -46,11 +61,11 @@ app.use(cookieParser());
  *                   type: string
  *                   format: date-time
  */
-app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({ status: 'UP', timestamp: new Date().toISOString() });
+app.get("/health", (req: Request, res: Response) => {
+  res.status(200).json({ status: "UP", timestamp: new Date().toISOString() });
 });
 
-app.use('/api/v1', rootRouter);
+app.use("/api/v1", rootRouter);
 
 swaggerDocs(app, PORT);
 
@@ -59,10 +74,12 @@ const MONGO_URI = process.env.MONGO_URI as string;
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-    console.log('✅ Connected to MongoDB');
-    app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+    console.log("✅ Connected to MongoDB");
+    app.listen(PORT, () =>
+      console.log(`🚀 Server running on http://localhost:${PORT}`)
+    );
   })
-  .catch(err => {
-    console.error('❌ Failed to connect to MongoDB', err);
+  .catch((err) => {
+    console.error("❌ Failed to connect to MongoDB", err);
     process.exit(1);
   });
