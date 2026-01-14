@@ -8,7 +8,8 @@ export const getProjects = async (req: AuthRequest, res: Response) => {
 
     const projects = await Project.find(filter)
       .populate('members', 'firstName lastName')
-      .populate('manager', 'firstName lastName');
+      .populate('manager', 'firstName lastName')
+      .sort({ createdAt: -1 });
 
     res.status(200).json(projects);
     return;
