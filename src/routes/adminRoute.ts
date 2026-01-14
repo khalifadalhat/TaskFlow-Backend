@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticate, authorize } from '../middleware/authMiddleware';
 import { getDashboardOverview } from '../controllers/adminController';
+import { getMemberDashboard } from '../controllers/memberController';
 
 const router = Router();
 
@@ -159,5 +160,6 @@ router.use(authenticate);
  *         description: Server error
  */
 router.get('/overview', authorize('admin'), getDashboardOverview);
+router.get('/member/overview', getMemberDashboard);
 
 export default router;
